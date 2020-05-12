@@ -1,18 +1,27 @@
-from dbhelper import DBHelper
+import dbconfig
+import os
+if dbconfig.test:
+    from mockdbhelper import MockDBHelper as DBHelper
+else:
+    from dbhelper import DBHelper
+
 from flask import Flask, render_template, request
 
 app = Flask(__name__)
 DB = DBHelper()
 
+API_KEY = os.environ.get("GOOGLE_MAPS_API_KEY")
 
 @app.route('/')
 def home():
     try:
+        api_key = API_KEY
         data = DB.get_all_inputs()
     except Exception as e:
         print(e)
         data = None
-    return render_template("home.html", data=data)
+    return render_template("home.html", data=data, api_key=api_key)
+
 
 @app.route("/add", methods=["POST"])
 def add():
@@ -31,8 +40,9 @@ def clear():
         DB.clear_all()
     except Exception as e:
         print(e)
-        data = None
+        data = 'No Records'
+    return home()
 
 
 if __name__ == '__main__':
-    app.run(host='localhost', port=6000, debug=True)
+    app.run(port=5000, debug=True)
