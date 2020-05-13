@@ -1,5 +1,4 @@
 import datetime
-
 import pymysql
 import dbconfig
 
@@ -42,13 +41,13 @@ class DBHelper:
         finally:
             connection.close()
 
-    def add_crime(self, category, date, latitude, longitude, description):
+    def add_crime(self, category, date, latitude, longitude, desc):
         connection = self.connect()
         try:
             query = "INSERT INTO crimes (category, date, latitude, longitude, description) \
-        VALUES (%s, %s, %s, %s, %s)"
+                     VALUES (%s, %s, %s, %s, %s)"
             with connection.cursor() as cursor:
-                cursor.execute(query, (category, date, latitude, longitude, description))
+                cursor.execute(query, (category, date, latitude, longitude, desc))
                 connection.commit()
         except Exception as e:
             print(e)
